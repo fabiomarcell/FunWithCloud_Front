@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu e Upload com jQuery e Bootstrap</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="icon" href="https://fastly.picsum.photos/id/586/200/200.jpg?hmac=qCQKBciYy8H3AxcVxnTZLYwXw02r33F5_3E4UmlB8H4" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #333;
+            width: 100%;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+		.menu .active {
+			background-color: #575757; /* Cor de fundo do item ativo */
+			color: #f44336; /* Cor do texto do item ativo */
+		}
+
+        .menu a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu a:hover {
+            background-color: #575757;
+        }
+
+        .menu a + a {
+            border-left: 1px solid white;
+            padding-left: 15px;
+        }
+
+        .container {
+            width: 80%;
+            margin-top: 100px; /* Espaço para o menu fixo */
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .section {
+            width: 80%;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .item-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .item-list li {
+            margin: 10px 0;
+            display: block;
+            margin-bottom: 15px;
+            text-align: center;
+            position: relative;
+            transition: opacity 0.3s ease;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .item-list li:hover {
+            opacity: 0.7;
+        }
+
+        .item-list li .item-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .item-list li .media-container {
+            width: 30%;
+            margin: 0 auto;
+        }
+
+        .item-list li button {
+            padding: 5px 10px;
+            color: #fff;
+            background-color: #f44336;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .item-list li button:hover {
+            background-color: #d32f2f;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-wrapper .file-upload-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .file-upload-wrapper .file-upload-btn:hover {
+            background-color: #218838;
+        }
+
+        .video-player {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .upload-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #f44336;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Rodapé */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #f44336;
+        }
+
+        .footer .social-icons a {
+            margin: 0 15px;
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="menu">
+		<img src="https://fastly.picsum.photos/id/586/200/200.jpg?hmac=qCQKBciYy8H3AxcVxnTZLYwXw02r33F5_3E4UmlB8H4" alt="Logo" class="logo">
+		<a href="#" class="menu-link active" data-target="item1">Item 1</a>
+		<a href="#" class="menu-link" data-target="item2">Item 2</a>
+		<a href="#" class="menu-link" data-target="item3">Item 3</a>
+		<a href="#" class="menu-link" data-target="item4">Todos</a>
+	</div>
+
+    <div class="container">
+        <div id="item1" class="section">
+            <h2>Item 1 - Vídeos</h2>
+            <ul class="item-list" id="video-list1"></ul>
+            <div class="upload-container">
+                <button class="upload-btn" onclick="openModal()">Upload Vídeo</button>
+            </div>
+        </div>
+
+        <div id="item2" class="section">
+            <h2>Item 2 - Vídeos</h2>
+            <ul class="item-list" id="video-list2"></ul>
+            <div class="upload-container">
+                <button class="upload-btn" onclick="openModal()">Upload Vídeo</button>
+            </div>
+        </div>
+
+        <div id="item3" class="section">
+            <h2>Item 3 - Mídia</h2>
+            <ul class="item-list" id="media-list"></ul>
+            <div class="upload-container">
+                <button class="upload-btn" onclick="openModal()">Upload Mídia</button>
+            </div>
+        </div>
+
+        <div id="item4" class="section">
+            <h2>Todos</h2>
+            <ul class="item-list" id="all-list"></ul>
+            <div class="upload-container">
+                <button class="upload-btn" onclick="openModal()">Upload Arquivo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">X</span>
+            <h2>Upload de Arquivo</h2>
+            <div class="file-upload-wrapper">
+                <button class="file-upload-btn">Escolher Arquivo</button>
+                <input type="file" id="file-input">
+            </div>
+            <br>
+            <button onclick="uploadFile()">Fazer Upload</button>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>&copy; 2025 Empresa Comercial. Todos os direitos reservados.</p>
+        <p>
+            <a href="#">Termos e Condições</a>
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Contato</a>
+        </p>
+        <div class="social-icons">
+            <a href="#" target="_blank">FB</a>
+            <a href="#" target="_blank">IG</a>
+            <a href="#" target="_blank">TW</a>
+        </div>
+    </div>
+
+    <script>
+        var lista1 = [
+            {"nome": "Teste de vídeo", "source": "C:\\Users\\F\\Documents\\Overwatch\\videos\\overwatch\\file_24-09-21_19-03-11.mp4", "type": 1, "filetype": 1},
+            {"nome": "Teste de vídeo 2", "source": "C:\\Users\\F\\Documents\\Overwatch\\videos\\overwatch\\file_24-09-22_01-37-29.mp4", "type": 1, "filetype": 1},
+            {"nome": "Teste de vídeo 3", "source": "C:\\Users\\F\\Documents\\Overwatch\\videos\\overwatch\\file_24-09-26_00-39-21.mp4", "type": 1, "filetype": 1}
+        ];
+        
+        var lista2 = [
+            {"nome": "Novo teste", "source": "E:\\Captures\\Monster Hunter Wilds 2025-03-05 20-14-01.mp4", "type": 2, "filetype": 1},
+            {"nome": "Novo teste 2", "source": "E:\\Captures\\Monster Hunter Wilds 2025-03-18 22-30-00.mp4", "type": 2, "filetype": 1},
+            {"nome": "Novo teste 3", "source": "E:\\Captures\\Monster Hunter Wilds 2025-03-04 16-40-13.mp4", "type": 2, "filetype": 1}
+        ];
+        
+        var lista3 = [
+            {"nome": "Multimidia", "source": "E:\\Captures\\MONSTER HUNTER_ WORLD(421471) 2022-08-19 22-54-24.mp4", "type": 3, "filetype": 1},
+            {"nome": "Multimidia 2", "source": "https://static.wikia.nocookie.net/sonic-x9874/images/e/ea/Sonic_X_-_Logo.png/revision/latest?cb=20160227161049", "type": 3, "filetype": 2},
+            {"nome": "Multimidia 3", "source": "https://www.myinstants.com/media/sounds/discord-call-sound.mp3", "type": 3, "filetype": 3}
+        ];
+
+        $(document).ready(function () {
+            showSection('item1');
+            
+            loadList('#video-list1', lista1);
+            loadList('#video-list2', lista2);
+            loadMediaList('#media-list', lista3);
+            loadAllList('#all-list', [lista1, lista2, lista3]);
+
+            $(".menu-link").click(function () {
+				// Remover a classe 'active' de todos os itens de menu
+				$(".menu-link").removeClass("active");
+
+				// Adicionar a classe 'active' ao item clicado
+				$(this).addClass("active");
+
+				// Exibir a seção correspondente
+				const target = $(this).data('target');
+				showSection(target);
+
+				if (target === 'item4') {
+					// Scroll to the top of the page when 'Todos' is clicked
+					$('html, body').animate({ scrollTop: 0 }, 'slow');
+				}
+			});
+        });
+
+        function showSection(sectionId) {
+            $(".section").hide();
+            $("#" + sectionId).fadeIn();
+        }
+
+        function loadList(listId, list) {
+            list.forEach(function (item) {
+                let mediaElement = '';
+                if (item.filetype === 1) {
+                    mediaElement = '<video class="video-player" controls><source src="' + item.source + '" type="video/mp4">Seu navegador não suporta o formato de vídeo.</video>';
+                } else if (item.filetype === 2) {
+                    mediaElement = '<img src="' + item.source + '" class="img-fluid" />';
+                } else if (item.filetype === 3) {
+                    mediaElement = '<audio controls><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
+                }
+                $(listId).append('<li><div class="item-name">' + item.nome + '</div><div class="media-container">' + mediaElement + '</div><button class="delete-btn" onclick="confirmDelete(\'' + item.nome + '\')">Excluir</button></li>');
+            });
+        }
+
+        function loadMediaList(listId, list) {
+            list.forEach(function (item) {
+                let mediaElement = '';
+                if (item.filetype === 1) {
+                    mediaElement = '<video class="video-player" controls><source src="' + item.source + '" type="video/mp4">Seu navegador não suporta o formato de vídeo.</video>';
+                } else if (item.filetype === 2) {
+                    mediaElement = '<img src="' + item.source + '" class="img-fluid" />';
+                } else if (item.filetype === 3) {
+                    mediaElement = '<audio controls><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
+                }
+                $(listId).append('<li><div class="item-name">' + item.nome + '</div><div class="media-container">' + mediaElement + '</div><button class="delete-btn" onclick="confirmDelete(\'' + item.nome + '\')">Excluir</button></li>');
+            });
+        }
+
+        function loadAllList(listId, lists) {
+            lists.forEach(function (list) {
+                loadList(listId, list);
+            });
+        }
+
+        function openModal() {
+            $("#upload-modal").fadeIn();
+        }
+
+        function closeModal() {
+            $("#upload-modal").fadeOut();
+        }
+
+        function uploadFile() {
+            alert("Arquivo enviado com sucesso!");
+            closeModal();
+        }
+
+        function confirmDelete(itemName) {
+            if (confirm('Deseja excluir o item: ' + itemName + '?')) {
+                alert('Item ' + itemName + ' excluído!');
+            }
+        }
+    </script>
+
+</body>
+</html>
