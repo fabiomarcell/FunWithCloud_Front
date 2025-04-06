@@ -110,7 +110,7 @@
 
         .item-list li .item-name {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 25px;
             display: block;
 			text-align: left;
         }
@@ -391,7 +391,7 @@
                 } else if (item.filetype === 2) {
                     mediaElement = '<img src="' + item.source + '" class="img-fluid" />';
                 } else if (item.filetype === 3) {
-                    mediaElement = '<audio controls><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
+                    mediaElement = '<audio controls style="width: 100%;"><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
                 }
                 $(listId).append('<li><div class="item-name">' + item.nome + '</div><div class="media-container">' + mediaElement + '</div><button class="delete-btn" onclick="confirmDelete(\'' + item.nome + '\')">Excluir</button></li>');
             });
@@ -405,7 +405,7 @@
                 } else if (item.filetype === 2) {
                     mediaElement = '<img src="' + item.source + '" class="img-fluid" />';
                 } else if (item.filetype === 3) {
-                    mediaElement = '<audio controls><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
+                    mediaElement = '<audio controls style="width: 100%;"><source src="' + item.source + '" type="audio/mp3">Seu navegador não suporta o formato de áudio.</audio>';
                 }
                 $(listId).append('<li><div class="item-name">' + item.nome + '</div><div class="media-container">' + mediaElement + '</div><button class="delete-btn" onclick="confirmDelete(\'' + item.nome + '\')">Excluir</button></li>');
             });
